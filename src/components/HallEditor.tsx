@@ -64,15 +64,38 @@ export function HallEditor({ onDone }: { onDone: () => void }) {
 
   const endDrag = () => setDraggingId(null)
 
-  const addTable = () => {
-    const table: Table = {
-      id: uid('tbl-'),
-      name: `Стол ${hall.tables.length + 1}`,
-      x: 50,
-      y: 50,
+  /** Ищет ближайшее свободное место, чтобы новые столы не ложились друг на друга. */
+  const freeSpot = (tables: Table[]): { x: number; y: number } => {
+    const rect = canvasRef.current?.getBoundingClientRect()
+    if (!rect || rect.width === 0) return { x: 50, y: 50 }
+    const stepX = ((hall.tableSize + 16) / rect.width) * 100
+    const stepY = ((hall.tableSize + 16) / rect.height) * 100
+    const occupied = (x: number, y: number) =>
+      tables.some(
+        (t) =>
+          Math.abs(((t.x - x) / 100) * rect.width) < hall.tableSize + 8 &&
+          Math.abs(((t.y - y) / 100) * rect.height) < hall.tableSize + 8,
+      )
+    for (let y = stepY / 2; y <= 100 - stepY / 2 + 0.001; y += stepY) {
+      for (let x = stepX / 2; x <= 100 - stepX / 2 + 0.001; x += stepX) {
+        if (!occupied(x, y)) return { x, y }
+      }
     }
-    setHall((prev) => ({ ...prev, tables: [...prev.tables, table] }))
-    setSelectedId(table.id)
+    return { x: 50, y: 50 }
+  }
+
+  const addTable = () => {
+    setHall((prev) => {
+      const spot = freeSpot(prev.tables)
+      const table: Table = {
+        id: uid('tbl-'),
+        name: `Стол ${prev.tables.length + 1}`,
+        x: spot.x,
+        y: spot.y,
+      }
+      setSelectedId(table.id)
+      return { ...prev, tables: [...prev.tables, table] }
+    })
   }
 
   const removeTable = (id: string) => {
@@ -185,6 +208,14 @@ export function HallEditor({ onDone }: { onDone: () => void }) {
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
       >
+        {hall.tables.length === 0 && (
+          <div className="empty-state" style={{ margin: 'auto' }}>
+            <p>Зал пустой. Добавьте столы и расставьте их так, как они стоят в заведении.</p>
+            <button className="btn primary" onClick={addTable}>
+              + Первый стол
+            </button>
+          </div>
+        )}
         {hall.tables.map((table) => (
           <TableBubble
             key={table.id}

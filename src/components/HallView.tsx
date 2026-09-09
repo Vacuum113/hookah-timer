@@ -41,7 +41,11 @@ export function HallView({ onEditHall }: { onEditHall: () => void }) {
     return (
       <div className="page">
         <div className="empty-state">
-          <p>В зале пока нет столов.</p>
+          <h2 style={{ margin: '0 0 6px', fontSize: 19 }}>Зал пока пустой</h2>
+          <p style={{ maxWidth: 420, margin: '0 auto 16px' }}>
+            Добавьте столы и расставьте их по экрану так, как они стоят в заведении, —
+            дальше кальяны запускаются одним тапом по столу.
+          </p>
           <button className="btn primary" onClick={onEditHall}>
             Расставить столы
           </button>

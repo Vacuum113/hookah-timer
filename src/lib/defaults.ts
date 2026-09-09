@@ -1,4 +1,4 @@
-import type { AppState, Program, Table } from '../types'
+import type { AppState, Program } from '../types'
 import { uid } from './id'
 
 export const STATE_VERSION = 2
@@ -39,31 +39,12 @@ function defaultPrograms(): Program[] {
 
 export const DEFAULT_TABLE_SIZE = 132
 
-function defaultTables(): Table[] {
-  const tables: Table[] = []
-  const cols = 4
-  const rows = 3
-  let n = 1
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      tables.push({
-        id: uid('tbl-'),
-        name: `Стол ${n}`,
-        x: ((col + 0.5) / cols) * 100,
-        // Немного поджимаем по вертикали, чтобы столы не растягивались на весь экран.
-        y: 8 + ((row + 0.5) / rows) * 72,
-      })
-      n++
-    }
-  }
-  return tables
-}
-
 export function createInitialState(): AppState {
   const programs = defaultPrograms()
   return {
     version: STATE_VERSION,
-    hall: { tableSize: DEFAULT_TABLE_SIZE, tables: defaultTables() },
+    // Зал пустой: столы заведение расставляет само в редакторе.
+    hall: { tableSize: DEFAULT_TABLE_SIZE, tables: [] },
     programs,
     sessions: [],
     history: [],
