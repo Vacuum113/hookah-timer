@@ -24,6 +24,8 @@ html, body, #root {
 }
 
 body {
+  /* Прокручивается только рабочая область, шапка с вкладками всегда на месте. */
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -138,8 +140,11 @@ input:focus-visible, select:focus-visible, button:focus-visible {
 
 .page {
   flex: 1;
+  /* min-height: 0 — иначе flex-элемент растягивается по контенту и скроллится вся страница. */
+  min-height: 0;
   overflow: auto;
   padding: 16px;
+  overscroll-behavior: contain;
 }
 
 .page-head {
