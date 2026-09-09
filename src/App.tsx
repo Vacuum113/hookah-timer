@@ -3,16 +3,18 @@ import { HallView } from './components/HallView'
 import { HallEditor } from './components/HallEditor'
 import { ProgramsEditor } from './components/ProgramsEditor'
 import { ShiftView } from './components/ShiftView'
+import { HelpView } from './components/HelpView'
 import { useStore } from './store'
 import { unlockAudio } from './lib/sound'
 
-type Tab = 'hall' | 'tables' | 'programs' | 'shift'
+type Tab = 'hall' | 'tables' | 'programs' | 'shift' | 'help'
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'hall', label: 'Зал' },
   { id: 'tables', label: 'Столы' },
   { id: 'programs', label: 'Программы' },
   { id: 'shift', label: 'Смена' },
+  { id: 'help', label: 'Справка' },
 ]
 
 export function App() {
@@ -82,6 +84,7 @@ export function App() {
       {tab === 'tables' && <HallEditor onDone={() => setTab('hall')} />}
       {tab === 'programs' && <ProgramsEditor onDone={() => setTab('hall')} />}
       {tab === 'shift' && <ShiftView />}
+      {tab === 'help' && <HelpView onGoTo={setTab} />}
     </div>
   )
 }
